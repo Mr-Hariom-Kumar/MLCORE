@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin Cancer Detection — ML Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --surface: #111a15;
+    --card: #162019;
+    --border: #1e3024;
+    --accent: #3dffa0;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #74b9ff;
+    --text: #e8f5ee;
+    --muted: #7a9e87;
+    --white: #f0faf4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(61,255,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,255,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    animation: gridPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes gridPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 70px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    background: rgba(61,255,160,0.05);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px 0 70px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 1s 0.3s ease both;
+    flex-wrap: wrap;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Phase layout */
+  .phases {
+    position: relative;
+  }
+
+  /* Vertical line */
+  .phases::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent4), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+    animation: slideIn 0.6s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.1s; }
+  .phase:nth-child(2) { animation-delay: 0.2s; }
+  .phase:nth-child(3) { animation-delay: 0.3s; }
+  .phase:nth-child(4) { animation-delay: 0.4s; }
+  .phase:nth-child(5) { animation-delay: 0.5s; }
+  .phase:nth-child(6) { animation-delay: 0.6s; }
+  .phase:nth-child(7) { animation-delay: 0.7s; }
+
+  .phase-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2px;
+  }
+
+  .phase-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+    border: 1.5px solid;
+    position: relative;
+    z-index: 2;
+  }
+
+  .phase-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0.2;
+    animation: dotPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.2; }
+    50% { transform: scale(1.3); opacity: 0; }
+  }
+
+  .ph1 .phase-dot { color: var(--accent); background: rgba(61,255,160,0.1); border-color: var(--accent); }
+  .ph2 .phase-dot { color: var(--accent4); background: rgba(116,185,255,0.1); border-color: var(--accent4); }
+  .ph3 .phase-dot { color: var(--accent3); background: rgba(255,209,102,0.1); border-color: var(--accent3); }
+  .ph4 .phase-dot { color: #c77dff; background: rgba(199,125,255,0.1); border-color: #c77dff; }
+  .ph5 .phase-dot { color: var(--accent2); background: rgba(255,107,107,0.1); border-color: var(--accent2); }
+  .ph6 .phase-dot { color: #00cec9; background: rgba(0,206,201,0.1); border-color: #00cec9; }
+  .ph7 .phase-dot { color: #fd79a8; background: rgba(253,121,168,0.1); border-color: #fd79a8; }
+
+  .phase-body {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    transition: border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+
+  .phase-body:hover {
+    border-color: rgba(61,255,160,0.25);
+    background: #1a2a1f;
+  }
+
+  .ph2 .phase-body:hover { border-color: rgba(116,185,255,0.25); }
+  .ph3 .phase-body:hover { border-color: rgba(255,209,102,0.25); }
+  .ph4 .phase-body:hover { border-color: rgba(199,125,255,0.25); }
+  .ph5 .phase-body:hover { border-color: rgba(255,107,107,0.25); }
+  .ph6 .phase-body:hover { border-color: rgba(0,206,201,0.25); }
+  .ph7 .phase-body:hover { border-color: rgba(253,121,168,0.25); }
+
+  .phase-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--white);
+  }
+
+  .phase-meta {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .badge-time {
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .badge-level {
+    border: 1px solid;
+  }
+
+  .ph1 .badge-level { color: var(--accent); border-color: rgba(61,255,160,0.3); background: rgba(61,255,160,0.07); }
+  .ph2 .badge-level { color: var(--accent4); border-color: rgba(116,185,255,0.3); background: rgba(116,185,255,0.07); }
+  .ph3 .badge-level { color: var(--accent3); border-color: rgba(255,209,102,0.3); background: rgba(255,209,102,0.07); }
+  .ph4 .badge-level { color: #c77dff; border-color: rgba(199,125,255,0.3); background: rgba(199,125,255,0.07); }
+  .ph5 .badge-level { color: var(--accent2); border-color: rgba(255,107,107,0.3); background: rgba(255,107,107,0.07); }
+  .ph6 .badge-level { color: #00cec9; border-color: rgba(0,206,201,0.3); background: rgba(0,206,201,0.07); }
+  .ph7 .badge-level { color: #fd79a8; border-color: rgba(253,121,168,0.3); background: rgba(253,121,168,0.07); }
+
+  .phase-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  /* Topics grid */
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .topic {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: #c8dece;
+    line-height: 1.4;
+  }
+
+  .topic-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 13px;
+  }
+
+  /* Resources */
+  .resources {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .resource-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 4px;
+    align-self: center;
+  }
+
+  .resource {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #a0c8b0;
+    white-space: nowrap;
+  }
+
+  /* Milestone marker */
+  .milestone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(61,255,160,0.05);
+    border: 1px dashed rgba(61,255,160,0.2);
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+
+  .milestone span {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+
+  .milestone-icon { font-size: 16px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .footer-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .progress-bar {
+    width: 200px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 24px auto 0;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent4));
+    border-radius: 2px;
+    animation: progressFill 2s 0.5s ease forwards;
+  }
+
+  @keyframes progressFill {
+    to { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="header">
+    <div class="tag">ML Learning Roadmap</div>
+    <h1>Skin Cancer<br><em>Detection</em></h1>
+    <p class="subtitle">A structured path from Python fundamentals to deploying a clinical-grade dermoscopy classifier using deep learning.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Phases</span></div>
+    <div class="stat"><span class="stat-num">9–12</span><span class="stat-label">Months</span></div>
+    <div class="stat"><span class="stat-num">HAM10000</span><span class="stat-label">Key Dataset</span></div>
+    <div class="stat"><span class="stat-num">CNN / ViT</span><span class="stat-label">Core Models</span></div>
+  </div>
+
+  <div class="phases">
+
+    <!-- Phase 1 -->
+    <div class="phase ph1">
+      <div class="phase-marker">
+        <div class="phase-dot">01</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Python & Math Foundations</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">4–6 wks</span>
+            <span class="badge badge-level">Beginner</span>
+          </div>
+        </div>
+        <p class="phase-desc">Build the mathematical and programming bedrock. Every model you'll write later is built on these primitives.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">🐍</span>Python: NumPy, Pandas, Matplotlib</div>
+          <div class="topic"><span class="topic-icon">∫</span>Linear algebra — vectors, matrices, dot products</div>
+          <div class="topic"><span class="topic-icon">📈</span>Calculus — derivatives, chain rule, gradients</div>
+          <div class="topic"><span class="topic-icon">🎲</span>Statistics — probability, distributions, Bayes' theorem</div>
+          <div class="topic"><span class="topic-icon">🖼️</span>Image basics — pixels, channels, histograms</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">fast.ai Practical DL</span>
+          <span class="resource">3Blue1Brown — Linear Algebra</span>
+          <span class="resource">CS50P</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Load, visualize & normalize a JPEG in NumPy without any ML library</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase ph2">
+      <div class="phase-marker">
+        <div class="phase-dot">02</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Classical ML & scikit-learn</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">3–4 wks</span>
+            <span class="badge badge-level">Beginner+</span>
+          </div>
+        </div>
+        <p class="phase-desc">Understand how learning algorithms work conceptually before touching neural networks. Many baselines are classical models.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">📐</span>Logistic Regression, SVM, k-NN</div>
+          <div class="topic"><span class="topic-icon">🌲</span>Decision Trees, Random Forests, XGBoost</div>
+          <div class="topic"><span class="topic-icon">⚖️</span>Train/val/test splits, cross-validation</div>
+          <div class="topic"><span class="topic-icon">📊</span>Metrics: accuracy, precision, recall, AUC-ROC</div>
+          <div class="topic"><span class="topic-icon">🔧</span>Overfitting, regularization, bias-variance</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">scikit-learn docs</span>
+          <span class="resource">Hands-On ML (Géron)</span>
+          <span class="resource">Kaggle Learn ML</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Classify skin lesion images using HOG features + SVM; report AUC score</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase ph3">
+      <div class="phase-marker">
+        <div class="phase-dot">03</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Deep Learning & CNNs</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">6–8 wks</span>
+            <span class="badge badge-level">Intermediate</span>
+          </div>
+        </div>
+        <p class="phase-desc">The core engine of skin lesion detection. Convolutional Neural Networks learn hierarchical visual features automatically — no hand-crafted descriptors needed.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">🧠</span>Perceptrons, activation functions, backprop</div>
+          <div class="topic"><span class="topic-icon">🔲</span>Convolution, pooling, stride, padding</div>
+          <div class="topic"><span class="topic-icon">🏗️</span>Architectures: ResNet, EfficientNet, DenseNet</div>
+          <div class="topic"><span class="topic-icon">⚙️</span>Optimizers: Adam, SGD, learning rate schedules</div>
+          <div class="topic"><span class="topic-icon">🔥</span>PyTorch & TensorFlow/Keras fundamentals</div>
+          <div class="topic"><span class="topic-icon">🛡️</span>Batch norm, dropout, weight decay</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">Deep Learning (Goodfellow)</span>
+          <span class="resource">CS231n Stanford</span>
+          <span class="resource">PyTorch Tutorials</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Train a CNN from scratch on CIFAR-10 with >85% accuracy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="phase ph4">
+      <div class="phase-marker">
+        <div class="phase-dot">04</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Medical Imaging & Dermoscopy Domain</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">3–4 wks</span>
+            <span class="badge badge-level">Intermediate</span>
+          </div>
+        </div>
+        <p class="phase-desc">Medical images are fundamentally different from ImageNet photos. You need domain knowledge before working on clinical data.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">🔬</span>Dermoscopy vs standard photography</div>
+          <div class="topic"><span class="topic-icon">🗂️</span>HAM10000 & ISIC datasets — 7 lesion classes</div>
+          <div class="topic"><span class="topic-icon">🏷️</span>ABCD rule: Asymmetry, Border, Color, Diameter</div>
+          <div class="topic"><span class="topic-icon">⚖️</span>Class imbalance (melanoma is rare)</div>
+          <div class="topic"><span class="topic-icon">🛡️</span>Ethics, FDA regulations, clinical workflows</div>
+          <div class="topic"><span class="topic-icon">🎨</span>Medical augmentation: color jitter, flips, hair removal</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">ISIC Challenge papers</span>
+          <span class="resource">HAM10000 paper (Tschandl 2018)</span>
+          <span class="resource">MICCAI proceedings</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Perform full EDA on HAM10000; document class distribution and visual patterns</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div class="phase ph5">
+      <div class="phase-marker">
+        <div class="phase-dot">05</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Transfer Learning & Advanced Architectures</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">6–8 wks</span>
+            <span class="badge badge-level">Advanced</span>
+          </div>
+        </div>
+        <p class="phase-desc">No model in production is trained from scratch on skin lesions alone. Transfer learning from ImageNet pretrained weights is the industry standard.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">♻️</span>Fine-tuning vs feature extraction</div>
+          <div class="topic"><span class="topic-icon">⚡</span>EfficientNet-B4/B7 — ISIC leaderboard standard</div>
+          <div class="topic"><span class="topic-icon">🤖</span>Vision Transformers (ViT, Swin Transformer)</div>
+          <div class="topic"><span class="topic-icon">🎭</span>Data augmentation: Albumentations library</div>
+          <div class="topic"><span class="topic-icon">🧪</span>Weighted loss, focal loss for class imbalance</div>
+          <div class="topic"><span class="topic-icon">🗳️</span>Test-time augmentation (TTA) & ensembles</div>
+          <div class="topic"><span class="topic-icon">🔍</span>Grad-CAM, SHAP — model explainability</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">timm library (HuggingFace)</span>
+          <span class="resource">Albumentations docs</span>
+          <span class="resource">ISIC 2018–2020 winning solutions</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Fine-tune EfficientNet-B4 on HAM10000 — achieve AUC ≥ 0.90</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="phase ph6">
+      <div class="phase-marker">
+        <div class="phase-dot">06</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">MLOps, Evaluation & Validation</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">4–5 wks</span>
+            <span class="badge badge-level">Advanced</span>
+          </div>
+        </div>
+        <p class="phase-desc">A model that isn't rigorously evaluated and tracked is a liability, not an asset — especially in healthcare.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">📏</span>Clinical metrics: sensitivity, specificity, PPV, NPV</div>
+          <div class="topic"><span class="topic-icon">📉</span>ROC curves, calibration curves, confusion matrices</div>
+          <div class="topic"><span class="topic-icon">📋</span>Experiment tracking: MLflow / Weights & Biases</div>
+          <div class="topic"><span class="topic-icon">🔄</span>Cross-validation strategies for medical data</div>
+          <div class="topic"><span class="topic-icon">🏗️</span>Model versioning & reproducibility</div>
+          <div class="topic"><span class="topic-icon">⚠️</span>Distribution shift & domain generalization</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">W&B documentation</span>
+          <span class="resource">MLflow tutorials</span>
+          <span class="resource">scikit-learn metrics guide</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Full evaluation report — confusion matrix, ROC, Grad-CAM visualizations, logged in W&B</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 7 -->
+    <div class="phase ph7">
+      <div class="phase-marker">
+        <div class="phase-dot">07</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div class="phase-title">Deployment & Production</div>
+          <div class="phase-meta">
+            <span class="badge badge-time">3–4 wks</span>
+            <span class="badge badge-level">Advanced</span>
+          </div>
+        </div>
+        <p class="phase-desc">Ship a real, usable system. A working deployment is the clearest proof of competence and is essential for portfolio impact.</p>
+        <div class="topics">
+          <div class="topic"><span class="topic-icon">🚀</span>ONNX / TorchScript model export</div>
+          <div class="topic"><span class="topic-icon">🌐</span>FastAPI REST endpoint for inference</div>
+          <div class="topic"><span class="topic-icon">🖥️</span>Gradio / Streamlit demo UI</div>
+          <div class="topic"><span class="topic-icon">🐳</span>Dockerize and deploy on HuggingFace Spaces or AWS</div>
+          <div class="topic"><span class="topic-icon">⚡</span>ONNX quantization & latency optimization</div>
+          <div class="topic"><span class="topic-icon">📱</span>(Optional) TFLite / CoreML for mobile</div>
+        </div>
+        <div class="resources">
+          <span class="resource-label">Resources</span>
+          <span class="resource">FastAPI docs</span>
+          <span class="resource">HuggingFace Spaces</span>
+          <span class="resource">ONNX Runtime</span>
+        </div>
+        <div class="milestone">
+          <span class="milestone-icon">🏁</span>
+          <span>Milestone: Public live demo — user uploads a lesion image and receives a prediction with heatmap overlay</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phases -->
+
+  <div class="footer">
+    <div class="footer-title">You're ready to compete</div>
+    <p class="footer-sub">Enter ISIC challenges · Publish on arXiv · Contribute to open-source medical AI</p>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+
+</div>
+</body>
+</html>
